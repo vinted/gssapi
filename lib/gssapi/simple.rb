@@ -260,10 +260,11 @@ module GSSAPI
     # Add a path to a custom keytab file
     # @param [String] keytab the path to the keytab
     def set_keytab(keytab)
+      min_stat = FFI::MemoryPointer.new :OM_uint32
       maj_stat = LibGSSAPI.krb5_gss_register_acceptor_identity(keytab)
       raise(
-        GssApiError.new(maj_stat),
-        "Failed using keytab '#{keytab}': krb5_gss_register_acceptor_identity did not return GSS_S_COMPLETE"
+        GssApiError.new(maj_stat, min_stat),
+        "Failed using keytab '#{keytab}':\nkrb5_gss_register_acceptor_identity did not return GSS_S_COMPLETE"
       ) if maj_stat != 0
       true
     end
